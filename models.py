@@ -27,12 +27,13 @@ def get_edge_index(n, sim):
              torch.cat((bottom, top))[None]), dim=0
         )
     else:
+#	eye = id, edge index è una matrice che è True in tutti gli elementi diversi dalla diagonale
         adj = (np.ones((n, n)) - np.eye(n)).astype(int)
         edge_index = torch.from_numpy(np.array(np.where(adj)))
 
     return edge_index
 
-
+#	n_f è il num features = 6, msg_dim è = 100
 class GN(MessagePassing):
     def __init__(self, n_f, msg_dim, ndim, hidden=300, aggr='add'):
         super(GN, self).__init__(aggr=aggr)  # "Add" aggregation.
@@ -42,7 +43,7 @@ class GN(MessagePassing):
             Lin(hidden, hidden),
             ReLU(),
             Lin(hidden, hidden),
-            ReLU(),
+            ReLU(),		
             ##(Can turn on or off this layer:)
 #             Lin(hidden, hidden), 
 #             ReLU(),
