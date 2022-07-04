@@ -63,6 +63,8 @@ class GN(MessagePassing):
         )
     
     #[docs]
+    # forward esegue message e fa l'aggregation (somma element wise), immaginiamo che update abbia in input l'output di forward (aggr_out = self.propagate?)
+
     def forward(self, x, edge_index):
         #x is [n, n_f]
         x = x
