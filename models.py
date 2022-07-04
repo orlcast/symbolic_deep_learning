@@ -92,7 +92,9 @@ class OGN(GN):
         self.nt = nt
         self.edge_index = edge_index
         self.ndim = ndim
-    
+
+#just derivative se augment è falso fa solo propagate ovvero calcola i messaggi e li somma, quindi la loss è solo MSE, potremmo cancellare augmentation 	
+
     def just_derivative(self, g, augment=False, augmentation=3):
         #x is [n, n_f]f
         x = g.x
@@ -244,8 +246,6 @@ class HGN(MessagePassing):
         self_energies = self.self_energy(x)
         return sum_pair_energies + self_energies
     
-    #just derivative se augment è falso fa solo propagate ovvero calcola i messaggi e li somma, quindi la loss è solo MSE, potremmo cancellare augmentation 
-
     def just_derivative(self, g, augment=False, augmentation=3):
         #x is [n, n_f]f
         x = g.x
