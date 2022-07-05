@@ -93,7 +93,9 @@ class OGN(GN):
         self.edge_index = edge_index
         self.ndim = ndim
 
-#just derivative se augment è falso fa solo propagate ovvero calcola i messaggi e li somma, quindi la loss è solo MSE, potremmo cancellare augmentation 	
+# just derivative se augment è falso fa solo propagate ovvero calcola i messaggi e li somma, quindi la loss è solo MSE, potremmo cancellare augmentation 	
+# During training, we also apply a random translation augmentation to all the particle positions to artificially generate more training data.
+# E' veramente necessario? non potremmo farlo nelle simulazioni?
 
     def just_derivative(self, g, augment=False, augmentation=3):
         #x is [n, n_f]f
