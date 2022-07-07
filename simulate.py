@@ -285,6 +285,9 @@ class SimulationDataset(object):
 #                 plt.xlim(-10, 10)
 #                 plt.ylim(-10, 10)
                 camera.snap()
+  
+            plt.close() #added to close static plot on colab
+    
             from IPython.display import HTML
             return HTML(camera.animate().to_jshtml())
 
