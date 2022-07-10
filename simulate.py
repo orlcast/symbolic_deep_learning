@@ -129,7 +129,7 @@ class SimulationDataset(object):
 
     def simulate(self, ns, key=0):
         rng = random.PRNGKey(key)
-        vp = jit(vmap(self.pairwise, (None, 0), 0), backend='cpu')
+        vp = jit(vmap(self.pairwise, (None, 0), 0))
         n = self._n
         dim = self._dim 
 
