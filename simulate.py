@@ -15,6 +15,11 @@ from celluloid import Camera
 s_ = onp.s_
 tqdm = lambda _: _
 
+def f():
+    return jax.numpy.ones(3)
+
+print(jax.jit(f, backend='cpu')().device()) # TFRT_CPU_0
+
 def make_transparent_color(ntimes, fraction):
   rgba = onp.ones((ntimes, 4))
   alpha = onp.linspace(0, 1, ntimes)[:, np.newaxis]
