@@ -124,38 +124,32 @@ class OGN(GN):
         else:
             return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
 
-###############################################################################################################################################################
+###################################################################################################################################################################
+#modelli personalizzati: 
+###################################################################################################################################################################
 
 class our_GN(MessagePassing):
     def __init__(self, n_f, msg_dim, ndim, hidden=300, aggr='add'):
-        super(GN, self).__init__(aggr=aggr)  # "Add" aggregation.
+        super(our_GN, self).__init__(aggr=aggr)  # "Add" aggregation.
         self.msg_fnc = Seq(
-            Lin(2*n_f, hidden),
+            Lin(2*n_f, 300),
             ReLU(),
-            Lin(hidden, hidden),
+            Lin(300, 200),
             ReLU(),
-            Lin(hidden, hidden),
+            Lin(200, 100),
             ReLU(),
-            ##(Can turn on or off this layer:)
-#             Lin(hidden, hidden),
-#             ReLU(),
-            Lin(hidden, msg_dim)
+            Lin(100, msg_dim)
         )
 
         self.node_fnc = Seq(
-            Lin(msg_dim+n_f, hidden),
+            Lin(50+n_f, hidden),
             ReLU(),
             Lin(hidden, hidden),
             ReLU(),
             Lin(hidden, hidden),
             ReLU(),
-#             Lin(hidden, hidden),
-#             ReLU(),
             Lin(hidden, ndim)
         )
-
-    #[docs]
-    # forward esegue message e fa l'aggregation (somma element wise), immaginiamo che update abbia in input l'output di forward (aggr_out = self.propagate?)
 
     def forward(self, x, edge_index):
         #x is [n, n_f]
@@ -174,20 +168,15 @@ class our_GN(MessagePassing):
         return self.node_fnc(tmp) #[n, nupdate]
 
 
-class our_OGN(our_GN):
-    def __init__(
-		self, n_f, msg_dim, ndim, dt,
+class Boccione_GN(our_GN):
+    def __init__(self, n_f, msg_dim, ndim, dt,
 		edge_index, aggr='add', hidden=300, nt=1):
 
-        super(OGN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
+        super(Boccione_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
         self.dt = dt
         self.nt = nt
         self.edge_index = edge_index
         self.ndim = ndim
-
-# just derivative se augment è falso fa solo propagate ovvero calcola i messaggi e li somma, quindi la loss è solo MSE, potremmo cancellare augmentation
-# During training, we also apply a random translation augmentation to all the particle positions to artificially generate more training data.
-# E' veramente necessario? non potremmo farlo nelle simulazioni?
 
     def just_derivative(self, g, augment=False, augmentation=3):
         #x is [n, n_f]f
@@ -209,3 +198,4 @@ class our_OGN(our_GN):
             return torch.sum((g.y - self.just_derivative(g, augment=augment, augmentation=augmentation))**2)
         else:
             return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
+        
