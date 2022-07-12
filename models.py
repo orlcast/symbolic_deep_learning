@@ -168,11 +168,11 @@ class our_GN(MessagePassing):
         return self.node_fnc(tmp) #[n, nupdate]
 
 
-class Boccione_GN(our_GN):
+class Fiasco_GN(our_GN):
     def __init__(self, n_f, msg_dim, ndim, dt,
 		edge_index, aggr='add', hidden=300, nt=1):
 
-        super(Boccione_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
+        super(Fiasco_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
         self.dt = dt
         self.nt = nt
         self.edge_index = edge_index
