@@ -142,7 +142,7 @@ class our_GN(MessagePassing):
         )
 
         self.node_fnc = Seq(
-            Lin(50+n_f, hidden),
+            Lin(msg_dim+n_f, hidden),
             ReLU(),
             Lin(hidden, hidden),
             ReLU(),
