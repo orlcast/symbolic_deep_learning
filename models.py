@@ -129,16 +129,16 @@ class OGN(GN):
 ###################################################################################################################################################################
 
 class our_GN(MessagePassing):
-    def __init__(self, n_f, msg_dim, ndim, hidden=300, aggr='add'):
+    def __init__(self, n_f, msg_dim, ndim, hidden=550, aggr='add'):
         super(our_GN, self).__init__(aggr=aggr)  # "Add" aggregation.
         self.msg_fnc = Seq(
-            Lin(2*n_f, 300),
+            Lin(2*n_f, hidden),
             ReLU(),
-            Lin(300, 200),
+            Lin(hidden, int(hidden*2./3.)),
             ReLU(),
-            Lin(200, 100),
+            Lin(int(hidden*2./3.), int(hidden/2.)),
             ReLU(),
-            Lin(100, msg_dim)
+            Lin(int(hidden/2.), msg_dim)
         )
 
         self.node_fnc = Seq(
