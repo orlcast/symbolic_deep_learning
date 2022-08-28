@@ -263,13 +263,13 @@ class Mbuti_GN(GN_mbuti):
                 edge_index, size=(x.size(0), x.size(0)),
                 x=x)
 
-    def loss(self, g, loss_type= 'abs'):
+    def loss(self, g, loss_type= 'abs', perc = 0.05):
         if loss_type == 'square':
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
 	if loss_type == 'pit': 
-	    if torch.abs(g.y - self.just_derivative(g))/g.y < 0.05 : 
+	    if torch.abs(g.y - self.just_derivative(g))/g.y < perc : 
 		return 0
 	    else: 
 		return  torch.abs(g.y - self.just_derivative(g))
