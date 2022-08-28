@@ -203,7 +203,7 @@ class GN_mbuti(MessagePassing):
     def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
         super(GN_mbuti, self).__init__(aggr=aggr)# "Add" aggregation.
 		self.msg_fnc = Seq(
-			Lin(2*n_f, hidden),
+			Lin(2*n_f, hidden) ,
 			ReLU(),
 			Lin(hidden, int(hidden*3./2.)),
 			ReLU(),
