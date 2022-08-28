@@ -202,19 +202,19 @@ class Fiasco_GN(our_GN):
 class GN_mbuti(MessagePassing):
     def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
         super(GN_mbuti, self).__init__(aggr=aggr)# "Add" aggregation.
-		self.msg_fnc = Seq(
-			Lin(2*n_f, hidden) ,
-			ReLU(),
-			Lin(hidden, int(hidden*3./2.)),
-			ReLU(),
-			Lin(int(hidden*3./2.), 2*hidden),
-			ReLU(),
-			Lin(2*hidden, int(hidden*3./2.)),
-			ReLU(),
-			Lin(int(hidden*3./2.), hidden), 
-			ReLU(), 
-			Lin(hidden, int(hidden/2.))
-		)
+	self.msg_fnc = Seq(
+		Lin(2*n_f, hidden) ,
+		ReLU(),
+		Lin(hidden, int(hidden*3./2.)),
+		ReLU(),
+		Lin(int(hidden*3./2.), 2*hidden),
+		ReLU(),
+		Lin(2*hidden, int(hidden*3./2.)),			
+		ReLU(),
+		Lin(int(hidden*3./2.), hidden), 
+		ReLU(), 
+		Lin(hidden, int(hidden/2.))
+	)
 
         self.node_fnc = Seq(
             Lin(msg_dim+n_f, hidden),
