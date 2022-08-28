@@ -201,7 +201,7 @@ class Fiasco_GN(our_GN):
 		
 class ourn_GN(MessagePassing):
     def __init__(self, n_f, msg_dim, ndim, hidden=550, aggr='add'):
-        super(our_GN, self).__init__(aggr=aggr)  # "Add" aggregation.
+        super(ourn_GN, self).__init__(aggr=aggr)  # "Add" aggregation.
         self.msg_fnc = Seq(
             Lin(2*n_f, hidden),
             ReLU(),
@@ -239,11 +239,11 @@ class ourn_GN(MessagePassing):
         return self.node_fnc(tmp) #[n, nupdate]
 
 
-class Fiascon_GN(our_GN):
+class Fiascon_GN(ourn_GN):
     def __init__(self, n_f, msg_dim, ndim, dt,
 		edge_index, aggr='add', hidden=300, nt=1):
 
-        super(Fiasco_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
+        super(Fiascon_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
         self.dt = dt
         self.nt = nt
         self.edge_index = edge_index
