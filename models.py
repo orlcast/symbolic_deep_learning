@@ -200,47 +200,26 @@ class Fiasco_GN(our_GN):
             return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
 		
 class GN_mbuti(MessagePassing):
-    def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
-        super(GN_mbuti, self).__init__(aggr=aggr)# "Add" aggregation.
-	self.msg_fnc = Seq(
-	    Lin(2*n_f, hidden) ,
-	    ReLU(),
-            Lin(hidden, int(hidden*3./2.)),
-            ReLU(),
-	    Lin(int(hidden*3./2.), 2*hidden),
-            ReLU(),
-	    Lin(2*hidden, int(hidden*3./2.)),			
-            ReLU(),
-            Lin(int(hidden*3./2.), hidden), 
-            ReLU(), 
-            Lin(hidden, int(hidden/2.))
-	)
+	def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
+		super(GN_mbuti, self).__init__(aggr=aggr)# "Add" aggregation.
+		self.msg_fnc = Seq(Lin(2*n_f, hidden), ReLU(), Lin(hidden, int(hidden*3./2.)), ReLU(), Lin(int(hidden*3./2.), 2*hidden), ReLU(), Lin(2*hidden, int(hidden*3./2.)), ReLU(), Lin(int(hidden*3./2.), hidden), ReLU(), Lin(hidden, int(hidden/2.)))
+		self.node_fnc = Seq(Lin(msg_dim+n_f, hidden), ReLU(), Lin(hidden, hidden), ReLU(), Lin(hidden, hidden), ReLU(), Lin(hidden, ndim) )
+	
+	def forward(self, x, edge_index):
+		#x is [n, n_f]
+		x = x
+		return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
+	
+	def message(self, x_i, x_j):
+		# x_i has shape [n_e, n_f]; x_j has shape [n_e, n_f]
+		tmp = torch.cat([x_i, x_j], dim=1)  # tmp has shape [E, 2 * in_channels]
+		return self.msg_fnc(tmp)
+	
+	def update(self, aggr_out, x=None):
+		# aggr_out has shape [n, msg_dim]
 
-        self.node_fnc = Seq(
-            Lin(msg_dim+n_f, hidden),
-            ReLU(),
-            Lin(hidden, hidden),
-            ReLU(),
-            Lin(hidden, hidden),
-            ReLU(),
-            Lin(hidden, ndim)
-        )
-
-    def forward(self, x, edge_index):
-        #x is [n, n_f]
-        x = x
-        return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
-
-    def message(self, x_i, x_j):
-        # x_i has shape [n_e, n_f]; x_j has shape [n_e, n_f]
-        tmp = torch.cat([x_i, x_j], dim=1)  # tmp has shape [E, 2 * in_channels]
-        return self.msg_fnc(tmp)
-
-    def update(self, aggr_out, x=None):
-        # aggr_out has shape [n, msg_dim]
-
-        tmp = torch.cat([x, aggr_out], dim=1)
-        return self.node_fnc(tmp) #[n, nupdate]
+		tmp = torch.cat([x, aggr_out], dim=1)
+		return self.node_fnc(tmp) #[n, nupdate]
 
 class Mbuti_GN(GN_mbuti):
     def __init__(self, n_f, msg_dim, ndim, dt,
