@@ -118,12 +118,16 @@ class OGN(GN):
                 edge_index, size=(x.size(0), x.size(0)),
                 x=x)
 
-    def loss(self, g, augment=True, square=False, augmentation=3, **kwargs):
-        if square:
-            return torch.sum((g.y - self.just_derivative(g, augment=augment, augmentation=augmentation))**2)
-        else:
-            return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
-
+    def loss(self, g, loss_type= 'abs', perc = 0.05):
+        if loss_type == 'square':
+            return torch.sum((g.y - self.just_derivative(g))**2)
+        if loss_type == 'abs':
+            return torch.sum(torch.abs(g.y - self.just_derivative(g)))
+        if loss_type == 'pit': 
+          if torch.abs(g.y - self.just_derivative(g))/g.y < perc : 
+            return 0
+          else: 
+            return  torch.abs(g.y - self.just_derivative(g))
 ###################################################################################################################################################################
 #modelli personalizzati: 
 ###################################################################################################################################################################
@@ -193,12 +197,17 @@ class Fiasco_GN(our_GN):
                 edge_index, size=(x.size(0), x.size(0)),
                 x=x)
 
-    def loss(self, g, augment=True, square=False, augmentation=3, **kwargs):
-        if square:
-            return torch.sum((g.y - self.just_derivative(g, augment=augment, augmentation=augmentation))**2)
-        else:
-            return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
-
+    def loss(self, g, loss_type= 'abs', perc = 0.05):
+        if loss_type == 'square':
+            return torch.sum((g.y - self.just_derivative(g))**2)
+        if loss_type == 'abs':
+            return torch.sum(torch.abs(g.y - self.just_derivative(g)))
+        if loss_type == 'pit': 
+          if torch.abs(g.y - self.just_derivative(g))/g.y < perc : 
+            return 0
+          else: 
+            return  torch.abs(g.y - self.just_derivative(g))
+		
 class GN_mbuti(MessagePassing):
 	def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
 		super(GN_mbuti, self).__init__(aggr=aggr)# "Add" aggregation.
