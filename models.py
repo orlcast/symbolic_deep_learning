@@ -242,8 +242,32 @@ class Mbuti_GN(MessagePassing):
 
         tmp = torch.cat([x, aggr_out], dim=1)
         return self.node_fnc(tmp) #[n, nupdate]
+
+class GN_Mbuti(Mbuti_GN): 
+	def __init__(self, n_f, msg_dim, ndim, dt,
+		edge_index, aggr='add', hidden=200, nt=1):
 		
-			
-			
-	
+		super(Mbuti_GN, self).__init__(n_f, msg_dim, ndim, hidden=hidden, aggr=aggr)
+        self.dt = dt
+        self.nt = nt
+        self.edge_index = edge_index
+        self.ndim = ndim
+		
+		def just_derivative(self, g, augment=False, augmentation=3):
+			#x is [n, n_f]f
+			x = g.x
+			ndim = self.ndim
+			if augment:
+				augmentation = torch.randn(1, ndim)*augmentation
+				augmentation = augmentation.repeat(len(x), 1).to(x.device)
+				x = x.index_add(1, torch.arange(ndim).to(x.device), augmentation)
+			edge_index = g.edge_index
+			return self.propagate(
+				edge_index, size=(x.size(0), x.size(0)), 
+				x=x) 
+		def loss(self, g, augment=True, square=False, augmentation=3, **kwargs):
+			if square:
+				return torch.sum((g.y - self.just_derivative(g, augment=augment, augmentation=augmentation))**2)
+			else:
+				return torch.sum(torch.abs(g.y - self.just_derivative(g, augment=augment)))
 
