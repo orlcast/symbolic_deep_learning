@@ -117,12 +117,13 @@ class OGN(GN):
                 x=x)
 
     def loss(self, g, loss_type= 'abs'):
+        epsilone = 0.01
         if loss_type == 'square':
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
         if loss_type == 'rad': 
-            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))))
+            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))+epsilon))
 ###################################################################################################################################################################
 #modelli personalizzati:
 ###################################################################################################################################################################
@@ -193,12 +194,13 @@ class Fiasco_GN(our_GN):
                 x=x)
                   
     def loss(self, g, loss_type= 'abs', perc = 0.05):
+        epsilon = 0.01
         if loss_type == 'square':
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
         if loss_type == 'rad': 
-            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))))
+            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))+epsilon))
 
     
 class GN_mbuti(MessagePassing):
@@ -264,10 +266,11 @@ class Mbuti_GN(GN_mbuti):
       return self.propagate(edge_index, size=(x.size(0), x.size(0)),x=x)
                        
     def loss(self, g, loss_type= 'abs'):
+        epsilon = 0.01
         if loss_type == 'square':
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
         if loss_type == 'rad': 
-            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))))
+            return torch.sum(torch.sqrt(torch.abs(g.y - self.just_derivative(g))+epsilon))
     
