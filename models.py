@@ -123,11 +123,8 @@ class OGN(GN):
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
-        if loss_type == 'pit': 
-          if torch.abs(g.y - self.just_derivative(g))/g.y < perc : 
-            return 0
-          else: 
-            return  torch.abs(g.y - self.just_derivative(g))
+        if loss_type == 'rad': 
+            return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
 ###################################################################################################################################################################
 #modelli personalizzati: 
 ###################################################################################################################################################################
