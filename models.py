@@ -9,7 +9,6 @@ from torch.nn import Sequential as Seq, Linear as Lin, ReLU, Softplus
 from torch.autograd import Variable, grad
 
 def gnn_model_summary(model):
-    
     model_params_list = list(model.named_parameters())
     print("----------------------------------------------------------------")
     line_new = "{:>20}  {:>25} {:>15}".format("Layer.Parameter", "Param Tensor Shape", "Param #")
@@ -74,12 +73,11 @@ class GN(MessagePassing):
             Lin(hidden, hidden),
             ReLU(),
             Lin(hidden, ndim)
-        )
-
+        )	
     def forward(self, x, edge_index):
-        #x is [n, n_f]
-        x = x
-        return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
+	      #x is [n, n_f]
+	      x = x
+	      return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
 
     def message(self, x_i, x_j):
         # x_i has shape [n_e, n_f]; x_j has shape [n_e, n_f]
@@ -119,13 +117,13 @@ class OGN(GN):
                 edge_index, size=(x.size(0), x.size(0)),
                 x=x)
 
-    def loss(self, g, loss_type= 'abs', perc = 0.05):
-        if loss_type == 'square':
-            return torch.sum((g.y - self.just_derivative(g))**2)
-        if loss_type == 'abs':
-            return torch.sum(torch.abs(g.y - self.just_derivative(g)):
-			     if loss_type == 'abs': 
-			     return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
+    def loss(self, g, loss_type= 'abs'):
+      if loss_type == 'square':
+			  return torch.sum((g.y - self.just_derivative(g))**2)
+		  if loss_type == 'abs':
+			  return torch.sum(torch.abs(g.y - self.just_derivative(g)):
+		  if loss_type == 'rad': 
+			  return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
 ###################################################################################################################################################################
 #modelli personalizzati: 
 ###################################################################################################################################################################
@@ -196,12 +194,12 @@ class Fiasco_GN(our_GN):
                 x=x)
 
     def loss(self, g, loss_type= 'abs', perc = 0.05):
-        if loss_type == 'square':
-            return torch.sum((g.y - self.just_derivative(g))**2)
-        if loss_type == 'abs':
-            return torch.sum(torch.abs(g.y - self.just_derivative(g)))
-if loss_type == 'abs': 
-	return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
+      if loss_type == 'square':
+        return torch.sum((g.y - self.just_derivative(g))**2)
+      if loss_type == 'abs':
+        return torch.sum(torch.abs(g.y - self.just_derivative(g)))
+      if loss_type == 'rad': 
+        return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
 
 	
 class GN_mbuti(MessagePassing):
@@ -259,20 +257,18 @@ class Mbuti_GN(GN_mbuti):
         self.ndim = ndim
 
     def just_derivative(self, g):
-        #x is [n, n_f]f
-        x = g.x
-        ndim = self.ndim
-        edge_index = g.edge_index
+      #x is [n, n_f]f
+      x = g.x
+      ndim = self.ndim
+      edge_index = g.edge_index
 
-        return self.propagate(
-                edge_index, size=(x.size(0), x.size(0)),
-                x=x)
+      return self.propagate(edge_index, size=(x.size(0), x.size(0)),x=x)
 
-    def loss(self, g, loss_type= 'abs', perc = 0.05):
-        if loss_type == 'square':
-            return torch.sum((g.y - self.just_derivative(g))**2)
-        if loss_type == 'abs':
-            return torch.sum(torch.abs(g.y - self.just_derivative(g)))
-if loss_type == 'abs': 
-	return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
+    def loss(self, g, loss_type= 'abs'):
+      if loss_type == 'square':
+        return torch.sum((g.y - self.just_derivative(g))**2)
+      if loss_type == 'abs':
+        return torch.sum(torch.abs(g.y - self.just_derivative(g)))
+      if loss_type == 'rad': 
+        return torch.sqrt(torch.abs(g.y -self.jut_derivative(g)))
 	
