@@ -124,7 +124,7 @@ class OGN(GN):
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
         if loss_type == 'rad': 
-            return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
+		return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
 ###################################################################################################################################################################
 #modelli personalizzati: 
 ###################################################################################################################################################################
@@ -200,7 +200,7 @@ class Fiasco_GN(our_GN):
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
         if loss_type == 'rad': 
-            return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
+		return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
 		
 class GN_mbuti(MessagePassing):
 	def __init__(self, n_f, msg_dim, ndim, hidden=200, aggr='add'):
@@ -272,6 +272,6 @@ class Mbuti_GN(GN_mbuti):
         if loss_type == 'abs':
             return torch.sum(torch.abs(g.y - self.just_derivative(g)))
        if loss_type == 'rad': 
-            return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
+		return  torch.sqrt(torch.abs(g.y - self.just_derivative(g)))
 
 
