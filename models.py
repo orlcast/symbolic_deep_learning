@@ -117,7 +117,7 @@ class OGN(GN):
                 x=x)
 
     def loss(self, g, loss_type= 'abs'):
-        epsilone = 0.01
+        epsilon = 0.01
         if loss_type == 'square':
             return torch.sum((g.y - self.just_derivative(g))**2)
         if loss_type == 'abs':
